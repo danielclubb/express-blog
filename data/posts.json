@@ -41,5 +41,16 @@
             "testing",
             "handlebars"
         ]
+    },
+    {
+        "title": "Lessons from the code review: Don't Repeat Yourself",
+        "date": "22/09/2022",
+        "id": "006",
+        "postPath": "/posts/006.js",
+        "tags": [
+            "express",
+            "handlebars",
+            "javascript"
+        ]
     }
 ]

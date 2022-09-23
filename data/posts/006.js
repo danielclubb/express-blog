@@ -1,0 +1,95 @@
+const content = `
+<h2>Refactoring Classes</h2>
+<p>Recently, I had to pass some context to an Express.js view in order to render some form fields in Handlebars. These three fields were for inputting IDs associated with a user, where the user could input up to three IDs, only one of which was required.</p>
+<p>To do this, I created a class called <code>FormField</code>, which is passed parameters in its constructor function to render the form fields. Here's what it looks like:</p>
+<pre>
+class FormField {
+    constructor({id, label, required, name, inputType}) {
+        this.id = id;
+        this.label = label;
+        this.required = required;
+        this.name = name;
+        this.inputType = inputType;
+    }
+}</pre>
+<p>Then in the viewContext, we instantiate our class like this for each of our form fields:</p>
+<pre>
+const viewContext = {
+    fields: [
+        new FormField({
+            id: 'formfield1',
+            label: 'ID Field 1',
+            name: 'formfield1',
+            required: true,
+            inputType: 'text'
+        }),
+        new FormField({
+            id: 'formfield2',
+            label: 'ID Field 2',
+            name: 'formfield2',
+            required: false,
+            inputType: 'text'
+        }),
+        new FormField({
+            id: 'formfield3',
+            label: 'ID Field 3',
+            name: 'formfield3',
+            required: false,
+            inputType: 'text'
+        })
+    ]
+};</pre>
+<p>Now, this method has a number of pros and cons:</p>
+<h3>Pros:</h3>
+<ul>
+    <li>Easily readable and self-documenting.</li>
+    <li>Makes creating additional fields that follow the same format as simple as possible.</li>
+</ul>
+<h3>Cons:</h3>
+<ul>
+    <li>Re-uses much of the same code multiple times.</li>
+    <li>Use of class may be 'overkill' for objects that are only instantiated 3 times.</li>
+</ul>
+<p>
+    Ultimately, the above code does not follow the "Don't Repeat Yourself (DRY)" software development paradigm, and needs to be refactored in order to mitigate the code bloat caused my instantiating multiple, very similar objects.
+</p>
+<p>On feedback from code review, the prevailing sentiment was that this code could be simplified down to many fewer lines, although to the detriment of human-readability.</p>
+<p>Given that the main difference between the three objects is the identifying number (1 , 2 and 3), we can simply use an array with these values, and use the map method to return our formatted object:</p>
+<pre>
+const formFields = [1, 2, 3].map(id => {
+    return {
+        id: \`formfield\${id}\`,
+        label: \`ID Field \${id}\`,
+        name: \`formfield\${id}\`,
+        required: true,
+        inputType: 'text'
+    }
+});</pre>
+<p>This hugely reduces the line count and enables us to use an iterative approach to create the objects instead of instantiating classes, however, we're still left with the issue that form field 1 is required, while the others are not.</p>
+<p>To solve this, we use a ternary operator to check if the <code>ID === 1</code>, and return true if it is:</p>
+<pre>
+const formFields = [1, 2, 3].map(id => {
+    return {
+        id: \`formfield\${id}\`,
+        label: \`ID Field \${id}\`,
+        name: \`formfield\${id}\`,
+        required: id === 1 ? true:false,
+        inputType: 'text'
+    }
+});</pre>
+<p>To take this a step further, we can simply remove the turnary operator to return true or false from our strict equality operator:</p>
+<pre>
+const formFields = [1, 2, 3].map(id => {
+    return {
+        id: \`formfield\${id}\`,
+        label: \`ID Field \${id}\`,
+        name: \`formfield\${id}\`,
+        required: id === 1,
+        inputType: 'text'
+    }
+});</pre>
+`;
+
+module.exports = {
+    content
+}
