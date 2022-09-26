@@ -52,5 +52,16 @@
             "handlebars",
             "javascript"
         ]
+    },
+    {
+        "title": "Adding client-side scripts in Express and Handlebars",
+        "date": "26/09/2022",
+        "id": "007",
+        "postPath": "/posts/007.js",
+        "tags": [
+            "express",
+            "handlebars",
+            "javascript"
+        ]
     }
 ]

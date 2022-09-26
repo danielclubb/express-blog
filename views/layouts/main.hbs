@@ -25,6 +25,27 @@
         </main>
     </div>
 
+    {{#if scripts}}
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            var script;
+            {{#each scripts}}
+                script = document.createElement('script');
+
+                script.src = '/public/javascripts/{{file}}';
+                {{#if async}}
+                    script.async = true;
+                {{/if}}
+                {{#if defer}}
+                    script.defer = true;
+                {{/if}}
+                script.type = 'text/javascript';
+                document.body.appendChild(script);
+            {{/each}}
+        });
+    </script>
+    {{/if}}
+
     <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
     <script src="/js/bootstrap.min.js"></script>
 

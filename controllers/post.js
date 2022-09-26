@@ -1,8 +1,8 @@
 const getPosts = require('./handlers/getPosts');
 const posts = getPosts();
+// const testScript = require('../public/javascripts/test');
 
 async function postController(request, response, next) {
-
     const postId = request.params.id;
 
     const post = posts.filter(el => {
@@ -13,6 +13,13 @@ async function postController(request, response, next) {
         const viewContext = {
             ...post[0],
             posts: posts,
+            scripts: [
+                {
+                    file: 'test.js',
+                    defer: false,
+                    async: false
+                }
+            ]
         };
         return response.render('post', viewContext);
     }
