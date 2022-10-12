@@ -47,6 +47,6 @@ pre {
 }
 @media only screen and (max-width: 600px) {
   .tag-container li, .tag-container p {
-    margin-bottom: 10px !important;
+    margin-top: 10px !important;
   }
 }
