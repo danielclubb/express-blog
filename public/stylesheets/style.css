@@ -26,6 +26,10 @@ pre {
   align-items: center;
   padding-left: 0 !important;
   list-style: none !important;
+  flex-wrap: wrap;
+}
+.tag-container li, .tag-container p {
+  margin-bottom: 5px;
 }
 .tag-container > p {
   margin-bottom: 0 !important;
