@@ -28,9 +28,6 @@ pre {
   list-style: none !important;
   flex-wrap: wrap;
 }
-.tag-container li, .tag-container p {
-  margin-bottom: 10px;
-}
 .tag-container > p {
   margin-bottom: 0 !important;
   margin-right: 0.5em;
@@ -47,4 +44,9 @@ pre {
 .tag-pill *{
   color: white !important;
   text-decoration: none;
+}
+@media only screen and (max-width: 600px) {
+  .tag-container li, .tag-container p {
+    margin-bottom: 10px !important;
+  }
 }
