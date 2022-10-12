@@ -1,0 +1,147 @@
+const content = `
+<p>
+	Occasionally, for legibility and following the ‘code for humans’ programming paradigm, we’ll need to use nested describe blocks to logically structure our unit tests.
+</p>
+<p>
+	In this example we have two versions of a page, each reflecting either side of a feature flag being true/false. We need to be able to test both versions of this page in Jest and we’d like to do this within a single file, and nested inside a single, parent describe block.
+</p>
+<p>
+	To be able to set the feature flag to true/false within each describe block, we need to use Jest’s <code>jest.mock</code> module that enables us to capture, override and modify functions that are called by our tests.
+</p>
+<p>
+	There is an issue in this approach however, using multiple jest.mocks inside the same parent describe block, regardless of whether or not they’re nested inside their own sub-describe blocks, will cause only the first jest.mock to be called before any unit tests execute.
+</p>
+<p>
+	This causes an issue for our use case, as we would like to be able to toggle the feature flag on/off between each describe block to be able to test both scenarios.
+</p>
+<p>
+	Here is our original code:
+</p>
+<pre>describe('Homepage route', () => {
+
+	describe('Homepage route feature flag ON', () => {
+		let request;
+
+		beforeAll(() => {
+			jest.mock('../feature-flags', () => {
+				return {
+					setFeatureFlags: (_request, response, next) => {
+						response.locals.featureFlags = require('../feature-flags.json').response;
+						// Overrides the mocked one.
+						response.locals.featureFlags = Object.assign(response.locals.featureFlags, {
+							// Set the feature flag to true
+							showNewHomepage: true
+						});
+						next();
+					}
+				};
+			});
+		});
+
+		it('Serves the page with a 200 in best case', () => {
+			return request.get('/home')
+				.send()
+				.expect(200);
+		});
+	});
+
+	describe('Homepage route feature flag OFF', () => {
+		let request;
+
+		beforeAll(() => {
+			jest.mock('../feature-flags', () => {
+				return {
+					setFeatureFlags: (_request, response, next) => {
+						response.locals.featureFlags = require('../feature-flags.json').response;
+						// Overrides the mocked one.
+						response.locals.featureFlags = Object.assign(response.locals.featureFlags, {
+							// Set the feature flag to false
+							showNewHomepage: false
+						});
+						next();
+					}
+				};
+			});
+		});
+
+		it('Serves the page with a 200 in best case', () => {
+			return request.get('/home')
+				.send()
+				.expect(200);
+		});
+	});
+
+});</pre>
+<p>
+	In this code, only the <code>jest.mock</code> inside the first describe block will be executed before unit tests are run, meaning both describe blocks will be run with a feature flag of true. In order to ensure both <code>describe</code> blocks receive their respective jest.mocks, we need to make use of Jest's <code>jest.resetModules();</code>
+</p>
+<p>
+	According to Jest's own documentation on <code>jest.resetModules()</code>:
+</p>
+<blockquote class="blockquote">
+	<p>"Resets the module registry - the cache of all required modules. This is useful to isolate modules where local state might conflict between tests."</p>
+</blockquote>
+<p>
+	In order to assign multiple jest.mocks inside the same parent describe block, Jest's registry needs to be refreshed before being reassigned. Here's our updated code with the <code>jest.resetModules();</code> added before the second <code>jest.mock</code> statement:
+</p>
+<pre>describe('Homepage route', () => {
+
+	describe('Homepage route feature flag ON', () => {
+		let request;
+
+		beforeAll(() => {
+			jest.mock('../feature-flags', () => {
+				return {
+					setFeatureFlags: (_request, response, next) => {
+						response.locals.featureFlags = require('../feature-flags.json').response;
+						// Overrides the mocked one.
+						response.locals.featureFlags = Object.assign(response.locals.featureFlags, {
+							// Set the feature flag to true
+							showNewHomepage: true
+						});
+						next();
+					}
+				};
+			});
+		});
+
+		it('Serves the page with a 200 in best case', () => {
+			return request.get('/home')
+				.send()
+				.expect(200);
+		});
+	});
+
+	describe('Homepage route feature flag OFF', () => {
+		let request;
+
+		beforeAll(() => {
+			<span style="color: #00ff00;">jest.resetModules();</span>
+			jest.mock('../feature-flags', () => {
+				return {
+					setFeatureFlags: (_request, response, next) => {
+						response.locals.featureFlags = require('../feature-flags.json').response;
+						// Overrides the mocked one.
+						response.locals.featureFlags = Object.assign(response.locals.featureFlags, {
+							// Set the feature flag to false
+							showNewHomepage: false
+						});
+						next();
+					}
+				};
+			});
+		});
+
+		it('Serves the page with a 200 in best case', () => {
+			return request.get('/home')
+				.send()
+				.expect(200);
+		});
+	});
+
+});</pre>
+`;
+
+module.exports = {
+	content
+}

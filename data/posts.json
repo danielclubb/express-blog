@@ -63,5 +63,16 @@
             "handlebars",
             "javascript"
         ]
+    },
+    {
+        "title": "How to use multiple jest.mocks inside nested describe statements.",
+        "date": "12/10/2022",
+        "id": "008",
+        "postPath": "/posts/008.js",
+        "tags": [
+            "express",
+            "jest",
+            "javascript"
+        ]
     }
 ]
