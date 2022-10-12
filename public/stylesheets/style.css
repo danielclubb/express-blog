@@ -29,7 +29,7 @@ pre {
   flex-wrap: wrap;
 }
 .tag-container li, .tag-container p {
-  margin-bottom: 5px;
+  margin-bottom: 10px;
 }
 .tag-container > p {
   margin-bottom: 0 !important;
